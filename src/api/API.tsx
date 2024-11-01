@@ -15,8 +15,20 @@ const searchGithub = async () => {
     if (!response.ok) {
       throw new Error('invalid API response, check the network tab');
     }
+
+    const detailedUsers = await Promise.all(
+      data.map(async (user: any) => {
+        const userResponse = await fetch(`https://api.github.com/users/${user.login}`, {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+          },
+        });
+        return await userResponse.json();
+      })
+    );
+
     // console.log('Data:', data);
-    return data;
+    return detailedUsers;
   } catch (err) {
     // console.log('an error occurred', err);
     return [];
