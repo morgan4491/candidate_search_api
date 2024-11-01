@@ -1,40 +1,35 @@
-import { useState, useEffect } from 'react';
-import { searchGithub, searchGithubUser } from '../api/API';
-import { Candidate } from '../interfaces/Candidate.interface';
-
+import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
+import { Candidate } from "../interfaces/Candidate.interface";
+import { searchGithub } from "../api/API";
 
 const CandidateSearch = () => {
-  const [candidateState, setCandidateState] = useState<Candidate[]>([]);
-  const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+  const { onSaveCandidate } = useOutletContext<{ onSaveCandidate: (candidate: Candidate) => void }>();
 
   useEffect(() => {
-    async function getCandidates() {
-      const candidateArray: Candidate[] = await searchGithub()
-      setCandidateState(candidateArray);
-      if (candidateArray.length > 0) {
-        const detailedCandidate = await searchGithubUser(candidateArray[0].login)
-        setCurrentCandidate(detailedCandidate);
-      }
+    fetchCandidates();
+  }, []);
+
+  const fetchCandidates = async () => {
+    const data = await searchGithub();
+    setCandidates(data);
+    setCurrentCandidateIndex(0);
+  };
+
+  const handleAccept = () => {
+    if (candidates[currentCandidateIndex]) {
+      onSaveCandidate(candidates[currentCandidateIndex]);
+      setCurrentCandidateIndex(currentCandidateIndex + 1);
     }
+  };
 
-    getCandidates();
-  }, [])
+  const handleReject = () => {
+    setCurrentCandidateIndex(currentCandidateIndex + 1);
+  };
 
-  const handleAccept = async () => {
-    moveToNextCandidate();
-  }
-
-  const handleReject = async () => {
-    moveToNextCandidate();
-  }
-
-  const moveToNextCandidate = async () => {
-    const nextIndex = (currentIndex + 1) % candidateState.length;
-    setCurrentIndex(nextIndex);
-    const detailedCandidate = await searchGithubUser(candidateState[nextIndex].login);
-    setCurrentCandidate(detailedCandidate);
-  }
+  const currentCandidate = candidates[currentCandidateIndex];
 
   return (
     <>
@@ -48,10 +43,10 @@ const CandidateSearch = () => {
             <p>Email: <a href={currentCandidate.email}>{currentCandidate.email}</a></p>
             <p>Company: {currentCandidate.company}</p>
           </div>
-          <div>
-            <button onClick={handleAccept}>+</button>
-            <button onClick={handleReject}>-</button>
-          </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <button className="save-profile" onClick={handleAccept}>+</button>
+              <button className="remove-profile" onClick={handleReject}>-</button>
+            </div>
         </div>
       ) : (
         <p>Loading candidates...</p>
