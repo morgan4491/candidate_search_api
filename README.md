@@ -3,7 +3,7 @@
 ## Table of Contents:
 - [Description](#description)
 - [License](#license)
-- [Screenshot](#screenshot)
+- [Screenshots](#screenshots)
 - [Website](#website)
 - [Questions](#questions)
 
@@ -16,13 +16,13 @@
 - This project is licensed under the MIT license.
 
 
-## Screenshot:
-- ![Screenshots of search page](/public/images/candidateSearch.png)
-- ![Screenshots of search page](/public/images/potentialCandidates.png)
+## Screenshots:
+![Screenshots of search page](/public/images/candidateSearch.png)
+![Screenshots of search page](/public/images/potentialCandidates.png)
 
 
 ## Website:
-- [Website link](https://6721824df3b418d2f5e320f6--mattmorgan.netlify.app)
+- [Website link](https://candidate-search-api.onrender.com)
 
 
 ## Questions:
